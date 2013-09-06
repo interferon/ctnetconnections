@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Connections Calculator</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="bootstrap/css/bootstrap-combined.min.css" rel="stylesheet" media="screen">
+	<link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="app/css/ctnetstyles.css" rel="stylesheet" media="screen">
+	<script type="text/javascript" src="app/clientscripts/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="app/clientscripts/jquery.validate.js"></script>
+	<script type="text/javascript" src="app/clientscripts/calcscript.js"></script>
+</head>
+	<body>
+		<div>
+			<h4><a href="/"><img src="app/images/logoctnet.png"></a></h4>
+		</div>
+		<div class="well span6 offset5" >
+
+			<form class="span7 controls controls-row " id="cablelengthblock">
+				<label class="span2 label label-important">Довжина кабеля</label>
+				<input id="cablelength" name="cablelength" type="text" class="span1">
+			</form>
+			<form class="controls controls-row span7 " id="taxesblock">
+				<label for="userplan" class="span2 label label-important">Обраний тариф</label>
+				<input id="userplan" name="userplan" type="text" class="span1" >
+				<label class="label label-info span" id="warninglabel" ></label>
+			</form>
+			<form class="controls controls-row span7 " id="taxesperiodblock">
+				<label for="userplanduration" class="span2 label label-important">Тривалість міс.</label>
+				<input id="userplanduration" name="userplanduration" type="text" class="span1" >
+			</form>
+			<div id="promoblock">
+				<div class="span7 infoblock">
+					<label class="span label label-important">Акційний аванс(300грн)</label>
+				</div>
+				<div class="controls controls-row offset1 ">
+					<label for="promoprepaidyes" class="span1 label">Так</label>
+					<input class="span" type="radio" name="promo" class="input-medium" value="yes" id="promoprepaidyes">
+				</div>
+				<div class="controls controls-row offset1">
+					<label for="promoprepaidno" class="span1 label">Ні</label>
+					<input class="span" type="radio" name="promo" class="input-medium" value="no" id="promoprepaidno">
+				</div>
+			</div>
+			<div class="span7 infoblock">
+				<label class="span2 label label-important">Оптика</label>
+			</div>
+			<div class="controls controls-row offset1">
+				<label for="opticalequipmentno" class="span2 label">Ні</label>
+				<input class="span" type="radio" name="opticalequipment" class="input-medium" id="opticalequipmentno" value="no">
+			</div>
+			<div class="controls controls-row offset1">
+				<label for="mediaconverter" class="span2 label">Медіаконвертер</label>
+				<input class="span" type="radio" name="opticalequipment"  class="input-medium" value="mediaconverter" id="mediaconverter">
+			</div>
+			<div class="controls controls-row offset1">
+				<label for="commutator" class="span2 label">Комутатор</label>
+				<input class="span" type="radio" name="opticalequipment" class="input-medium" value="commutator" id="commutator">
+			</div>	
+			<div class="controls controls-row span infoblock" id="oncashblock" style="margin-top: 15px">
+				<div>
+					<label for="mediaconverter" class="span2 label label-important">Кошти на рахунок</label>
+				</div>
+				<div class="controls controls-row offset1">
+					<label for="oncahsyes" class="span1 label">Так</label>
+					<input class="span" type="radio" name="oncash" class="input-medium" value="yes" id="oncashyes">
+				</div>
+				<div class="controls controls-row offset1">
+					<label for="oncashno" class="span1 label">Ні</label>
+					<input class="span" type="radio" name="oncash" class="input-medium" value="no" id="oncashno">
+				</div>
+			</div>
+			<div class="controls controls-row span infoblock">
+				<label class="span2 label label-important">Вартість робіт</label>
+				<label class="span1 btn" id="work">0</label>
+			</div>
+			<div class="controls controls-row span infoblock">
+				<label class="span2 label label-important">На рахунок</label>
+				<label class="span1 btn" id="userbill">0</label>
+			</div>
+			<div class="controls controls-row span infoblock">
+				<label class="span2 label label-important">Всього</label>
+				<label class="span1 btn" id="total">0</label>
+			</div>
+		</div>
+	</body>
+</html>

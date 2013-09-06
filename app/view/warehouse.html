@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Комора</title>
+	<script type="text/javascript" src="app/clientscripts/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="app/clientscripts/utils.js"></script>
+	<script type="text/javascript" src="app/clientscripts/serverCommunicator.js"></script>
+	<link href="bootstrap/css/bootstrap-combined.min.css" rel="stylesheet" media="screen">
+	<link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="app/css/ctnetstyles.css" rel="stylesheet" media="screen">
+	<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+	<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="app/clientscripts/jquery.validate.js"></script>
+	<script type="text/javascript" src="app/clientscripts/warehouse.js"></script>
+</head>
+	<body>
+		<!-- warehouse -->
+		<!-- server messages -->
+		<h5 class="muted">
+			<div class="alert" id="serverMessages" style="display: none; text-allign : center"></div>
+		</h5>
+		<!-- end server messages -->
+		<div class="row span10 " id="itemsrow">
+		<div>
+			<h3><a href="/"><img src="app/images/logoctnet.png"></a></h3>
+		</div>
+			<div id="warehouse" class="well span11" style="margin-top : 30px; margin-left: 9%">
+				<!-- warehouse tabs -->
+				
+				<div class="tabbable"> <!-- Only required for left/right tabs -->
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab8" data-toggle="tab" id="warehouse">Увесь склад</a></li>
+						<li><a href="#tab1" data-toggle="tab">Звита пара</a></li>
+						<li><a href="#tab2" data-toggle="tab">Оптика</a></li>
+						<li><a href="#tab3" data-toggle="tab" id="boxesstoretab">Коробки</a></li>
+						<li><a href="#tab4" data-toggle="tab">Патч-панелі</a></li>
+						<li><a href="#tab5" data-toggle="tab">Патч-Корди</a></li>
+						<li><a href="#tab6" data-toggle="tab">Піг-тейли</a></li>
+						<li><a href="#tab7" data-toggle="tab">Розетки</a></li>
+						<li><a href="#tab9" data-toggle="tab" id="warehouselogs">Лог</a>
+						</li>
+					</ul>
+					<!-- test line -->
+					<div class="tab-content">
+					<div class="tab-pane" id="tab1">
+						<!-- inner copper cable tabs -->
+						<div class="tabbable"> <!-- Only required for left/right tabs -->
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#сtab1" data-toggle="tab">Додати на склад</a></li>
+								<li><a href="#сtab2" id="showcopperincome" data-toggle="tab">Наявний</a></li>
+								<li><a href="#сtab3" id="showcopperuse"  data-toggle="tab">Використаний</a></li>
+								<li><a href="#ctab4"  id="showcopperbillimgs"  data-toggle="tab">Фото накладних</a></li>
+							</ul>
+							<div class="tab-content">
+								<div class="tab-pane active" id="сtab1">
+									<!-- copper cable income -->
+									<div id="copperblock" class="span6 wellwhite">
+										<legend>Звита пара</legend>
+										<div class="controls controls-row">
+											<label class="label label-important span1">Тип</label>
+											<select  id="coppercabletype" class="span2" data-style="btn" size="">
+											<option>UTP-IN</option>
+											<option>UTP-OUT</option>
+											<option>FTP-IN</option>
+											<option>FTP-OUT</option>
+											</select>
+										</div>
+										<div class="controls controls-row">
+											<label class="label label-important span1">Пари</label>
+											<select  id="copperpairs" class="span2" data-style="btn" size="">
+											<option>2</option>
+											<option>4</option>
+											</select>
+										</div>
+										<form id="copperinputform">
+												<div class="controls controls-row">
+													<label class="label label-important span1">Трос</label>
+													<input  id="copperrope" name="copperrope" class="span2" type="text" >
+												</div>
+												<div class="controls controls-row">
+													<label class="label label-important span1">Виробник</label>
+													<input  id="coppermanufacturer" name="coppermanufacturer" class="span2" type="text" >
+												</div>
+												<div class="controls controls-row">
+													<label class="label label-important span1">Серія</label>
+													<input  id="copperserial" name="copperserial" class="span2" type="text" >
+												</div>
+												<div class="controls controls-row">
+													<label class="label label-important span1">Довжина</label>
+													<input  id="copperlength" name="copperlength" class="span2" type="text" >
+												</div>
+												<div class="controls controls-row">
+													<label class="label label-important span1">Ціна</label>
+													<input  id="copperprice" name="copperprice" class="span2" type="text" >
+												</div>
+											<div id="copperphotouploadform">
+												<div class="row">
+													<div class="span5">
+														<form method="post" action="/uploadbillimage">
+															<div class="controls controls-row">
+																<label class="label label-important span1">Фото</label>
+																<input  type="file" name="copperbillimage" id="copperbillimage"class="span2">
+															</div>
+															<div class="form-actions">
+																<input id="savecopperincome" type="submit" value="Вперед!" class="btn btn"></div>
+														</form>
+													</div>
+
+													<div class="span4">
+														<div class="progress progress-striped active hide">
+															<div style="width: 0%" class="bar">
+															</div>
+														</div>
+													</div>
+
+													<div class="span4">
+														<div class="alert hide">
+															<button type="button" data-dismiss="alert" class="close">x</button>
+															<span><strong class="message"></strong></span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</form>
+									</div>
+									<!-- end copper cable income-->
+								</div>
+
+								<div class="tab-pane" id="сtab2">
+									<display:table class="table table-striped table-condensed" id="copperincometable" name="results" stylesheet="display: none">
+									</display:table>
+								</div>
+
+								<div class="tab-pane" id="сtab3">
+
+									<display:table class="table table-striped table-condensed" id="copperusetable" name="results" stylesheet="display: none">
+									</display:table>
+									<div class="offset1 controls controls-row">
+										<div class="controls controls-row span">
+											<label class="label label-important span">Старт</label>
+											<input type="date" id="copperusestart" class="span2">
+										</div>
+										<div class="controls controls-row span">
+											<label class="label label-important span">Стоп</label>
+											<input type="date" id="copperusestop" class="span2">
+										</div>
+
+									</div>
+
+								</div>
+
+								<div class="tab-pane" id="ctab4">
+
+									<display:table class="table table-striped table-condensed"
+										id="copperbillsimages" name="results" stylesheet="display: none">
+									</display:table>
+									<div class="offset1 controls controls-row">
+										<div class="controls controls-row span">
+											<label class="label label-important span">Старт</label>
+											<input type="date" id="copperbillsstart" class="span2">
+										</div>
+										<div class="controls controls-row span">
+											<label class="label label-important span">Стоп</label>
+											<input type="date" id="copperbillsstop" class="span2">
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- end of inner copper cable tabs -->
+					</div>
+						<div class="tab-pane" id="tab2">
+							<div class="tabbable"> <!-- Only required for left/right tabs -->
+								<ul class="nav nav-tabs">
+									<li class="active"><a href="#otab1" data-toggle="tab">Додати на склад</a></li>
+									<li><a href="#otab2" data-toggle="tab" id="showopticalincome">Наявний</a></li>
+									<li><a href="#otab3" id="showopticaluse" data-toggle="tab" >Виконані плани</a></li>
+									<li><a href="#otab4"  id="showopticallogs" data-toggle="tab">Лог змін</a></li>
+									<li><a href="#otab5" id="showcabelimgs"  data-toggle="tab">Фото накладних</a></li>
+									<li><a href="#otab6" id="workercablecash"  data-toggle="tab">Премії</a></li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane active" id="otab1">
+										<div id="opticalblock" class="span6 wellwhite">
+											<legend>Оптичний кабель</legend>
+											<div class="controls controls-row">
+												<label class="label label-important span1">Волокна</label>
+												<select  id="optfibers" class="span2" data-style="btn" size="">
+												<option>4</option>
+												<option>8</option>
+												<option>12</option>
+												<option>16</option>
+												<option>24</option>
+												<option>32</option>
+												<option>36</option>
+												<option>48</option>
+												<option>72</option>
+												<option>96</option>
+												</select>
+											</div>
+											<div class="controls controls-row">
+												<label class="label label-important span1">Трос</label>
+												<select  id="optrope" class="span2" data-style="btn" size="">
+												<option>1,5</option>
+												<option>2</option>
+												<option>4</option>
+												<option>8</option>
+												</select>
+											</div>
+											<div class="controls controls-row">
+												<label class="label label-important span1">Барабан</label>
+												<select id="optdrum" class="span2">
+													<option>Так</option>
+													<option>Ні</option>
+												</select>
+											</div>
+											<form id="opticalincomeform">
+												<div class="controls controls-row">
+													<label class="label label-important span1">Виробник</label>
+													<input  id="optmanufacturer" name="optmanufacturer" class="span2" type="text" >
+												</div>
+												<div class="controls controls-row">
+													<label class="label label-important span1">Довжина</label>
+													<input  id="optlength" name="optlength" class="span2" type="text">
+												</div>
+												<div class="controls controls-row">
+													<label class="label label-important span1">Ціна</label>
+													<input  id="optprice" name="optprice" class="span2" type="text" >
+												</div>
+												<div id="photouploadform">
+													<div class="row">
+														<div class="span5">
+															<form method="post" action="/uploadbillimage">
+																<div class="controls controls-row">
+																	<label class="label label-important span1">Фото</label>
+																	<input  type="file" name="opticalbillimage" id="opticalbillimage"class="span2">
+																</div>
+																<div class="form-actions">
+																	<input id="saveopticalincome" type="submit" value="Вперед!" class="btn btn"></div>
+															</form>
+														</div>
+
+														<div class="span4">
+															<div class="progress progress-striped active hide">
+																<div style="width: 0%" class="bar">
+																</div>
+															</div>
+														</div>
+
+														<div class="span4">
+															<div class="alert hide">
+																<button type="button" data-dismiss="alert" class="close">x</button>
+																<span><strong class="message"></strong></span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+									<div class="tab-pane" id="otab2">
+										<display:table class="table table-striped table-condensed"
+										id="opticalincometable" name="results" stylesheet="display: none">
+										</display:table>
+										<display:table class="table table-striped table-condensed"
+										id="opticalplannedtable" name="results" stylesheet="display: none">
+										</display:table>
+
+									</div>
+									<div class="tab-pane" id="otab3">
+										<display:table class="table table-striped table-condensed" id="opticalusetable" name="results" stylesheet="display: none">
+										</display:table>
+										<div class="offset1 controls controls-row">
+										<div class="controls controls-row span">
+											<label class="label label-important span">Старт</label>
+											<input type="date" id="optusestart" class="span2">
+										</div>
+										<div class="controls controls-row span">
+											<label class="label label-important span">Стоп</label>
+											<input type="date" id="optusestop" class="span2">
+										</div>
+
+									</div>
+									</div>
+									<div  class="tab-pane" id="otab4">
+										<display:table class="table table-striped table-condensed" id="opticallogstable" name="results" stylesheet="display: none">
+										</display:table>
+										<div class="offset1 controls controls-row">
+										<div class="controls controls-row span">
+											<label class="label label-important span">Старт</label>
+											<input type="date" id="optlogsstart" class="span2">
+										</div>
+										<div class="controls controls-row span">
+											<label class="label label-important span">Стоп</label>
+											<input type="date" id="optlogsstop" class="span2">
+										</div>
+
+									</div>
+									</div>
+									<div  class="tab-pane" id="otab5">
+										<display:table class="table table-striped table-condensed" id="billsimages" name="results" stylesheet="display: none">
+										</display:table>
+										<div class="offset1 controls controls-row">
+										<div class="controls controls-row span">
+											<label class="label label-important span">Старт</label>
+											<input type="date" id="optbillsstart" class="span2">
+										</div>
+										<div class="controls controls-row span">
+											<label class="label label-important span">Стоп</label>
+											<input type="date" id="optbillsstop" class="span2">
+										</div>
+
+									</div>
+									</div>
+									<div  class="tab-pane" id="otab6">
+										<display:table class="table table-striped table-condensed"
+											id="workerscashtables" name=""></display:table>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane" id="tab3">
+							<ul class="nav nav-tabs">
+								<li class="active">
+									<a href="#boxtab" data-toggle="tab" id="addboxtostoretab" >Додати коробки</a>
+								</li>
+								<li>
+									<a href="#boxstoretab" data-toggle="tab" id="boxtostoretabletab">Наявні</a>
+								</li>
+								<li>
+									<a href="#boxbillstab" data-toggle="tab" id="boxbills" >Фото накладних</a>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div class="tab-pane active" id="boxtab">
+									<form id="boxstoreform" class="span5 wellwhite" action="/uploadbillimage">
+										<div class="controls controls-row">
+											<label class="label label-important span1">Тип</label>
+											<select class="span2" id="boxstoreselector"></select>
+										</div>
+										<div class="controls controls-row">
+											<label class="label label-important span1">К-сть</label>
+											<input class="span2" id="boxquantity" name="boxquantity">
+										</div>
+										<div class="controls controls-row">
+											<label class="label label-important span1">Накладна</label>
+											<input type="file" id="boxbillimage" name="boxbillimage" class="span2">
+										</div>
+										<div class="form-actions">
+											<input id ="saveboxtostore" type="submit"class="btn btn span" value="Додати">
+											</div>
+											<div class="span4">
+												<div class="progress progress-striped active hide">
+													<div style="width: 0%" class="bar">
+													</div>
+												</div>
+											</div>
+										<div>
+									</form>
+								</div>
+							</div>
+								<div class="tab-pane" id="boxbillstab">
+									Фото накладних
+									<display:table class="table table-striped table-condensed"
+									id="boxesbillstable" name=""></display:table>
+									<div class="offset1 controls controls-row">
+										<div class="controls controls-row span">
+											<label class="label label-important span">Старт</label>
+											<input type="date" id="boxbillsstart" class="span2">
+										</div>
+										<div class="controls controls-row span">
+											<label class="label label-important span">Стоп</label>
+											<input type="date" id="boxbillsstop" class="span2">
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane" id="boxstoretab">
+								<display:table class="table table-striped table-condensed"
+										id="boxesstoretable" name=""></display:table>
+								</div>
+						</div>
+
+						</div>
+						<div class="tab-pane" id="tab4">
+							<ul class="nav nav-tabs">
+								<li class="active">
+									<a href="#patchpaneltab" data-toggle="tab" id="addpatchpaneltostoretab" >Додати патч-панелі</a>
+								</li>
+								<li>
+									<a href="#patchpanelstoretab" data-toggle="tab" id="patchpaneltostoretabletab">Наявні</a>
+								</li>
+								<li>
+									<a href="#patchpanelbillstab" data-toggle="tab" id="patchpanelbills" >Фото накладних</a>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div class="tab-pane active" id="patchpaneltab">
+									<form id="patchpanelstoreform" class="span5 wellwhite" action="/uploadbillimage">
+										<div class="controls controls-row">
+											<label class="label label-important span1">Тип</label>
+											<select class="span2" id="patchpanelstoreselector">
+												<option>1U</option>
+												<option>2U</option>
+												<option>Боксік_2_вол</option>
+												<option>Боксік_12_вол</option>
+											</select>
+										</div>
+										<div class="controls controls-row">
+											<label class="label label-important span1">К-сть</label>
+											<input class="span2" id="patchpanelquantity" name="patchpanelquantity">
+										</div>
+										<div class="controls controls-row">
+											<label class="label label-important span1">Накладна</label>
+											<input type="file" id="patchpanelbillimage" name="patchpanelbillimage" class="span2">
+										</div>
+										<div class="form-actions">
+											<input id ="savepatchpaneltostore" type="submit"class="btn btn span" value="Додати">
+										</div>
+										<div class="span4">
+											<div class="progress progress-striped active hide">
+												<div style="width: 0%" class="bar">
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane" id="patchpanelbillstab">
+									Фото накладних
+									<display:table class="table table-striped table-condensed"
+									id="patchpanelesbillstable" name=""></display:table>
+									<div class="offset1 controls controls-row">
+										<div class="controls controls-row span">
+											<label class="label label-important span">Старт</label>
+											<input type="date" id="patchpanelbillsstart" class="span2">
+										</div>
+										<div class="controls controls-row span">
+											<label class="label label-important span">Стоп</label>
+											<input type="date" id="patchpanelbillsstop" class="span2">
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane" id="patchpanelstoretab">
+									<display:table class="table table-striped table-condensed"
+											id="patchpanelesstoretable" name=""></display:table>
+								</div>
+							</div>
+						</div>
+
+						<div class="tab-pane" id="tab5">
+							<ul class="nav nav-tabs">
+							<li class="active">
+								<a href="#patchcordtab" data-toggle="tab" id="addpatchcordtostoretab" >Додати патч-корди</a>
+							</li>
+							<li>
+								<a href="#patchcordstoretab" data-toggle="tab" id="patchcordtostoretabletab">Наявні</a>
+							</li>
+							<li>
+								<a href="#patchcordbillstab" data-toggle="tab" id="patchcordbills" >Фото накладних</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="patchcordtab">
+								<form id="patchcordstoreform" class="span5 wellwhite" action="/uploadbillimage">
+									<div class="controls controls-row">
+										<label class="label label-important span1">Довжина</label>
+										<select class="span2" id="patchcordlengthsselector">
+											<option>1m</option>
+											<option>3m</option>
+											<option>5m</option>
+											<option>10m</option>
+										</select>
+									</div>
+									<div class="controls controls-row">
+										<label class="label label-important span1">Тип</label>
+										<select class="span2" id="patchcordstypesselector">
+											<option>SC-SC</option>
+											<option>FC-SC</option>
+											<option>FC-FC</option>
+											<option>LC-SC</option>
+											<option>LC-LC</option>
+										</select>
+									</div>
+									<div class="controls controls-row">
+										<label class="label label-important span1">К-сть</label>
+										<input class="span2" id="patchcordquantity" name="patchcordquantity">
+									</div>
+									<div class="controls controls-row">
+										<label class="label label-important span1">Накладна</label>
+										<input type="file" id="patchcordbillimage" name="patchcordbillimage" class="span2">
+									</div>
+									<div class="form-actions">
+										<input id ="savepatchcordtostore" type="submit"class="btn btn span" value="Додати">
+									</div>
+									<div class="span4">
+										<div class="progress progress-striped active hide">
+											<div style="width: 0%" class="bar">
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="tab-pane" id="patchcordbillstab">
+								<display:table class="table table-striped table-condensed"
+								id="patchcordesbillstable" name=""></display:table>
+								<div class="offset1 controls controls-row">
+									<div class="controls controls-row span">
+										<label class="label label-important span">Старт</label>
+										<input type="date" id="patchcordbillsstart" class="span2">
+									</div>
+									<div class="controls controls-row span">
+										<label class="label label-important span">Стоп</label>
+										<input type="date" id="patchcordbillsstop" class="span2">
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane" id="patchcordstoretab">
+								<display:table class="table table-striped table-condensed"
+								id="patchcordesstoretable" name=""></display:table>
+							</div>
+						</div>
+						</div>
+
+
+						<div class="tab-pane" id="tab6">
+							<ul class="nav nav-tabs">
+							<li class="active">
+								<a href="#pigtailstab" data-toggle="tab" id="addpigtailstostoretab" >Додати піг-тейли</a>
+							</li>
+							<li>
+								<a href="#pigtailsstoretab" data-toggle="tab" id="pigtailstostoretabletab">Наявні</a>
+							</li>
+							<li>
+								<a href="#pigtailsbillstab" data-toggle="tab" id="pigtailsbills" >Фото накладних</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="pigtailstab">
+								<form id="pigtailsstoreform" class="span5 wellwhite" action="/uploadbillimage">
+									<div class="controls controls-row">
+										<label class="label label-important span1">Довжина</label>
+										<select class="span2" id="pigtailslengthsselector">
+											<option>1m</option>
+											<option>3m</option>
+											<option>5m</option>
+											<option>10m</option>
+										</select>
+									</div>
+									<div class="controls controls-row">
+										<label class="label label-important span1">Тип</label>
+										<select class="span2" id="pigtailstypesselector">
+											<option>SC</option>
+											<option>FC</option>
+											<option>LC</option>
+										</select>
+									</div>
+									<div class="controls controls-row">
+										<label class="label label-important span1">К-сть</label>
+										<input class="span2" id="pigtailsquantity" name="pigtailsquantity">
+									</div>
+									<div class="controls controls-row">
+										<label class="label label-important span1">Накладна</label>
+										<input type="file" id="pigtailsbillimage" name="pigtailsbillimage" class="span2">
+									</div>
+									<div class="form-actions">
+										<input id ="savepigtailstostore" type="submit"class="btn btn span" value="Додати">
+									</div>
+									<div class="span4">
+										<div class="progress progress-striped active hide">
+											<div style="width: 0%" class="bar">
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="tab-pane" id="pigtailsbillstab">
+
+								<display:table class="table table-striped table-condensed"
+								id="pigtailsesbillstable" name=""></display:table>
+								<div class="offset1 controls controls-row">
+									<div class="controls controls-row span">
+										<label class="label label-important span">Старт</label>
+										<input type="date" id="pigtailsbillsstart" class="span2">
+									</div>
+									<div class="controls controls-row span">
+										<label class="label label-important span">Стоп</label>
+										<input type="date" id="pigtailsbillsstop" class="span2">
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane" id="pigtailsstoretab">
+								<display:table class="table table-striped table-condensed"
+								id="pigtailsesstoretable" name=""></display:table>
+							</div>
+						</div>
+						</div>
+
+
+						<div class="tab-pane" id="tab7">
+							<ul class="nav nav-tabs">
+							<li class="active">
+								<a href="#socketstab" data-toggle="tab" id="addsocketstostoretab" >Додати розетки</a>
+							</li>
+							<li>
+								<a href="#socketsstoretab" data-toggle="tab" id="socketstostoretabletab">Наявні</a>
+							</li>
+							<li>
+								<a href="#socketsbillstab" data-toggle="tab" id="socketsbills" >Фото накладних</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="socketstab">
+								<form id="socketsstoreform" class="span5 wellwhite" action="/uploadbillimage">
+									<div class="controls controls-row">
+										<label class="label label-important span1">Тип</label>
+										<select class="span2" id="socketsstoreselector">
+											<option>SC</option>
+											<option>FC</option>
+											<option>LC</option>
+										</select>
+									</div>
+									<div class="controls controls-row">
+										<label class="label label-important span1">К-сть</label>
+										<input class="span2" id="socketsquantity" name="socketsquantity">
+									</div>
+									<div class="controls controls-row">
+										<label class="label label-important span1">Накладна</label>
+										<input type="file" id="socketsbillimage" name="socketsbillimage" class="span2">
+									</div>
+									<div class="form-actions">
+										<input id ="savesocketstostore" type="submit"class="btn btn span" value="Додати">
+									</div>
+									<div class="span4">
+										<div class="progress progress-striped active hide">
+											<div style="width: 0%" class="bar">
+											</div>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="tab-pane" id="socketsbillstab">
+
+								<display:table class="table table-striped table-condensed"
+								id="socketsesbillstable" name=""></display:table>
+								<div class="offset1 controls controls-row">
+									<div class="controls controls-row span">
+										<label class="label label-important span">Старт</label>
+										<input type="date" id="socketsbillsstart" class="span2">
+									</div>
+									<div class="controls controls-row span">
+										<label class="label label-important span">Стоп</label>
+										<input type="date" id="socketsbillsstop" class="span2">
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane" id="socketsstoretab">
+								<display:table class="table table-striped table-condensed"
+								id="socketsesstoretable" name=""></display:table>
+							</div>
+						</div>
+						</div>
+						<div class="tab-pane active" id="tab8">
+							<div class="accordion" id="accordioncopperincome">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordioncopperincome" href="#collapsecopperswarehouse">
+											Звита пара
+										</a>
+									</div>
+									<div id="collapsecopperswarehouse" class="accordion-body collapse in">
+										<div class="accordion-inner">
+										<display:table class="table table-striped table-condensed"
+										id="copppercablewarehousetable" name=""></display:table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="accordion" id="accordionopticalincome">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionopticalincome" href="#collapseopticalincome">
+											Оптоволоконний кабель
+										</a>
+									</div>
+									<div id="collapseopticalincome" class="accordion-body collapse in ">
+										<div class="accordion-inner">
+										<display:table class="table table-striped table-condensed"
+										id="opticalcablewarehousetable" name=""></display:table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="accordion" id="accordionboxstore">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionboxstore" href="#collapseboxesstorewarehouse">
+											Коробки
+										</a>
+									</div>
+									<div id="collapseboxesstorewarehouse" class="accordion-body collapse in">
+										<div class="accordion-inner">
+										<display:table class="table table-striped table-condensed"
+										id="boxeswarehousetable" name=""></display:table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="accordion" id="accordionpatchpanelstore">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionpatchpanelstore" href="#collapsepatchpanelstorewarehouse">
+											Патч-панелі
+										</a>
+									</div>
+									<div id="collapsepatchpanelstorewarehouse" class="accordion-body collapse in">
+										<div class="accordion-inner">
+										<display:table class="table table-striped table-condensed"
+										id="patchpanelswarehousetable" name=""></display:table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="accordion" id="accordionpatchcordsstore">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionpatchcordsstore" href="#collapsepatchcordstorewarehouse">
+											Патч-корди
+										</a>
+									</div>
+									<div id="collapsepatchcordstorewarehouse" class="accordion-body collapse in">
+										<div class="accordion-inner">
+										<display:table class="table table-striped table-condensed"
+										id="patchcordswarehousetable" name=""></display:table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="accordion" id="accordionpigtailsstore">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionpigtailsstore" href="#collapsepigtailstorewarehouse">
+											Піг-тейли
+										</a>
+									</div>
+									<div id="collapsepigtailstorewarehouse" class="accordion-body collapse in">
+										<div class="accordion-inner">
+										<display:table class="table table-striped table-condensed"
+										id="pigtailswarehousetable" name=""></display:table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="accordion" id="accordionsocketsstore">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionsocketsstore" href="#collapsesocketstorewarehouse">
+											Розетки
+										</a>
+									</div>
+									<div id="collapsesocketstorewarehouse" class="accordion-body collapse in">
+										<div class="accordion-inner">
+										<display:table class="table table-striped table-condensed"
+										id="socketswarehousetable" name=""></display:table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="tab-pane" id="tab9">
+						<display:table class="table table-striped table-condensed"
+								id="warehouselogstable" name=""></display:table>
+						<div class="offset1 controls controls-row">
+							<div class="controls controls-row span">
+								<label class="label label-important span">Старт</label>
+								<input type="date" id="warehouselogsstart" class="span2">
+							</div>
+							<div class="controls controls-row span">
+								<label class="label label-important span">Стоп</label>
+								<input type="date" id="warehouselogsstop" class="span2">
+							</div>
+						</div>
+						</div>
+
+					</div>
+				</div>
+			</div >
+		</div >
+		<!-- комора -->
+
+		<!-- copper use modal -->
+			<div id="copperUseModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="copperUseModalLabel" aria-hidden="true">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="copperUseModalLabel">Додати використання кабелю</h3>
+			</div>
+			<div class="modal-body">
+				<form id="copperuseform" class="span3">
+					<input id="copperuselength" name="copperuselength" type="text" placeholder="Метраж" class="span3">
+					<input id="coppercontract" name="coppercontract" type="text" placeholder="Використання" class="span3">
+					<select id="workerselector" multiple="" size="5" class="span3" data-style="btn" >
+					</select>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button id="addcopperuse" class="btn btn">Додати</button>
+			</div>
+		</div>
+		<!-- copper use modal -->
+		<!-- optical Plan modal -->
+		<div id="opticalPlanModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="opticalPlanModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="opticalPlanModalLabel">Додати план витрати кабелю</h3>
+			</div>
+			<div class="modal-body">
+				<form id="opticalplanform" class="span5">
+					<div class="controls controls-row">
+						<label class="label label-important span2">Запланована довжина</label>
+						<input id="opticalplanlength" name="opticalplanlength" type="text" placeholder="Введіть довжину" class="span2">
+					</div>
+					<div class="controls controls-row">
+						<label class="label label-important span2">Тип призначення</label>
+						<select id="cabelPlanType" class="span">
+							<option value="1">Протяжка</option>
+							<option value="2">Продаж</option>
+						</select>
+					</div>
+					<div class="controls controls-row">
+						<label class="label label-important span2">Опис призначення</label>
+						<textarea cols="5" rows="10"  class="span2" id="opticalintensions" name="opticalintensions"></textarea>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button id="addcableplan" class="btn btn">Додати</button>
+			</div>
+		</div>
+		<!-- optical Plan modal -->
+
+		<!-- optical use modal -->
+		<div id="opticalUseModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="opticalUseModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 id="opticalUseModalLabel">Додати витрату кабелю</h3>
+			</div>
+			<div class="modal-body">
+				<form id="opticaluseform" class="span5">
+					<div class="controls controls-row">
+						<label class="label label-important span2">Довжина</label>
+						<input id="opticaluselength" name="opticaluselength" type="text" placeholder="Введіть довжину" class="span2">
+
+					</div>
+					<div class="controls controls-row">
+						<label class="label label-important span2">Монтажники</label>
+						 <select id="opticaluseworkerselector" multiple="" size="5" class="span" data-style="btn" >
+						</select>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button id="addopticalcableuse" class="btn btn">Додати</button>
+			</div>
+		</div>
+		<!-- optical use modal -->
+
+		<!-- deleteconfirmmodal -->
+		<div id="delconfirmmodal" class="modal hide fade">
+			<div class="modal-header">
+				<h3>Видалення</h3>
+			</div>
+			<div class="modal-body" style="height : 120px;">
+				<div class="alert">
+					<p >Ви намагаєтесь видалити імовірно важливу інформацію. Можливості її відновлення не буде!</p>
+					<p >Бажаєте продовжити?</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="javascript:$('#delconfirmmodal').modal('hide')" class="btn btn">Ні</a>
+				<button id="deleteitemirreversibly" class="btn btn-danger">Так</button>
+			</div>
+		</div>
+	<!-- deleteconfirmmodal end -->
+	</body>
+</html>

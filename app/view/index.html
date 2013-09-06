@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>CTNetConnections</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="//api-maps.yandex.ru/2.0/?load=package.standard,package.geoObjects&lang=uk-UA" type="text/javascript"></script>
+		<script type="text/javascript" src="app/clientscripts/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="app/clientscripts/utils.js"></script>
+		<script type="text/javascript" src="app/clientscripts/serverCommunicator.js"></script>
+		<link href="bootstrap/css/bootstrap-combined.min.css" rel="stylesheet" media="screen">
+		<link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+		<link href="app/css/ctnetstyles.css" rel="stylesheet" media="screen">
+		<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+		<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="app/clientscripts/jquery.validate.js"></script>
+		<script type="text/javascript" src="app/clientscripts/mainscript.js"></script>
+		<script type="text/javascript" src="app/clientscripts/mapscript.js"></script>
+	</head>
+
+	<body>
+		<div class="">
+				<div id="topcontainer" class="container">
+					<div>
+						<h3><a href="/"><img src="app/images/logoctnet.png"></a></h3>
+					</div>
+					<!-- navigation bar on top -->
+					<div class="span15" id="mainnavigation">
+						<div class="navbar">
+							<div class="navbar-inner">
+								<ul class="nav nav-pills">
+									<li><a id="addstreet"><i class="icon-road"></i>Вулиці</a></li>
+									<ul class="nav">
+										<li class="divider-vertical"></li>
+									</ul>
+									<li><a id="addbuilding"><i class="icon-home"></i>Будинки</a></li>
+									<ul class="nav">
+										<li class="divider-vertical"></li>
+									</ul>
+									<li><a id="connections"><i class="icon-random"></i>Зв'язки</a></li>
+									<ul class="nav">
+										<li class="divider-vertical"></li>
+									</ul>
+									<li  class="dropdown">
+										<a id="equipment" class="dropdown-toggle"
+										data-toggle="dropdown"
+										href="#"><i class="icon-th-list"></i>Обладнання
+											<b class="caret"></b>
+										</a>
+										<ul class="dropdown-menu">
+											<li><a id="editcombtn">Комутатори</a></li>
+											<li><a id="editupsbtn">UPS</a></li>
+											<li><a id="editboxbtn">Коробки</a></li>
+											<li><a id="editodfbtn">ODF</a></li>
+										</ul>
+									</li>
+									<li class="divider-vertical"></li>
+								</ul>
+
+
+								<ul class="nav">
+									<li><a id="changelog"><i class="icon-list-alt"></i>Історія</a></li>
+									<ul class="nav">
+									<li class="divider-vertical"></li>
+									</ul>
+									<ul class="nav">
+										<li><a id="warehouse" href="/warehouse"><i class="icon-shopping-cart"></i>Комора</a></li>
+									<ul class="nav">
+										<li class="divider-vertical"></li>
+									</ul>
+									</ul>
+									
+									<li  class="dropdown">
+										<a id="equipment" class="dropdown-toggle"
+										data-toggle="dropdown"
+										href="#"><i class="icon-th-list"></i>Ще
+											<b class="caret"></b>
+										</a>
+										<ul class="dropdown-menu">
+											<li><a id="editpersonnel"><i class="icon-user"></i>Персонал</a></li>
+											<li><a href="calc" id="calc"><i class="icon-th"></i>Калькулятор підключень</a></li>
+										</ul>
+									</li>
+									<ul class="nav">
+									<li class="divider-vertical"></li>
+									</ul>
+									
+								</ul>
+								<ul class="nav">
+									<li><a id="logout"><i class="icon-share"></i>Вийти</a></li>
+									<ul class="nav">
+									</ul>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- end of navigation bar -->
+					<!-- changes history -->
+					<div class="span11 well" id="changelogblock" style="display: none">
+						<a id="closechangelog" class="close"><i class="icon-remove"></i></a>
+						<display:table class="table table-striped table-condensed"  id="changelogtable" name="results" stylesheet="display: none"></display:table>
+						<div class="constrols controls-row offset1">
+							<div class="constrols controls-row span">
+								<label class="label label-important span">Старт</label>
+								<input type="date" id="changelogstartdate" class="span">
+							</div>
+							<div class="constrols controls-row span">
+								<label class="label label-important span">Стоп</label>
+								<input type="date" id="changelogenddate" class="span">
+							</div>
+						</div>
+					</div>
+					<!-- changes history end -->
+					<!-- server messages -->
+					<h5 class="muted">
+						<div class="alert affix" id="serverMessages" style="display: none"></div>
+					</h5>
+					<!-- end server messages -->
+
+					<!-- personal -->
+					<div class="row-fliud span8 offset1 well" id="personnel" style="display: none">
+						<legend>Персонал<a id="closeworkeradder" class="close"><i class="icon-remove"></i></a></legend>
+							<div class="span3 controls controls-row">
+									<!-- street selector -->
+								<legend>Монтажники</legend>
+								<div class="input-append">
+									<select id="workerselector_main" class="" data-style="btn">
+									<!-- street options -->
+									</select>
+									<button id="delworkerbtn" class="btn btn-danger" type="button">
+										<i class="icon-trash "></i>
+									</button>
+								</div>
+							</div >
+							<div class="span3 offset1 controls controls-row">
+								<legend>Новий монтажник</legend>
+								<form id="workerform" class="input-append">
+									<input id="newworkernamefield" name="newworkernamefield" class="input-medium" type="text" placeholder="Введіть ім'я..">
+									<input id="addworkerbtn" class="btn btn" type="button" value="Додати">
+								</form>
+							</div>
+					</div>
+					<!-- end personal -->
+					<!-- connections -->
+					<div class="offset1 row span9 well" id="connectionsrow" style="display: none">
+						<legend>Редактор зв'язків<a id="closeconnectionsadder" class="close"><i class="icon-remove"></i></a></legend>
+							<div class="row span10">
+								<!-- <legend>Створити з'єднання</legend> -->
+								<div id="connectionsfrom"
+								class="controls controls-row span4">
+									<span class="span1 label label-important">Звідки</span>
+									<select id="buildingselector_from" size="20" class="span3">
+									</select>
+								</div>
+								<div id="connectionsto" class="controls controls-row span4">
+									<span class="span1 label label-important">Куди</span>
+									<select id="buildingselector_to" size="20" class="span3">
+									</select>
+								</div>
+								<div class="offset1 controls controls-row span6">
+									<label class="span1 label label-important">
+									Тип звязку</label>
+									<select id="connectiontype" class="span3">
+										<option>Оптичний</option>
+										<option>Мідний</option>
+									</select>
+									<button id="connectbuildingsbtn" class="btn btn span" ><i class="icon-resize-small "></i></button>
+								</div>
+
+
+							</div>
+						<div class="span4">
+							<div>
+								<legend>Перелік зв'язків</legend>
+								<select id="connectionslist" size="5" class="connectionslistselector"  >
+								</select>
+							<div class="controls controls-row span7">
+								<div class="input-append span3">
+									<input id="buildingssearchfield" type="text" class="" placeholder="Пошук">
+									<button id="delconnectionbtn" class="btn btn-parimary btn-danger"><i class="icon-trash "></i></button>
+								</div>
+								<div class="input-append span3">
+									<select id="connectiontype_change" class="">
+										<option>Оптичний</option>
+										<option>Мідний</option>
+									</select>
+									<button id="changeconnectiontypebtn"  class="btn btn" ><i class="icon-retweet "></i></button>
+								</div>
+							</div>
+							</div>
+						</div>
+					</div>
+					<!-- end connections -->
+					<!-- streets -->
+					<div class="row span10 offset1" id="streetsrow">
+						<div id="streetadder" class='span4 offset1 well' style="display: none">
+							<legend>Редактор вулиць<a id="closestreetadder" class="close"><i class="icon-remove"></i></a></legend>
+							<div class="span4  controls controls-row">
+								<div class="input-append">
+									<select id="streetselector" class="" data-style="btn">
+									</select>
+									<button id="showrenamefield" class="btn btn-danger" type="button" value="x">
+										<i class="icon-edit "></i>
+									</button>
+								</div>
+								<form id="streetrenameform" class="input-append" style="display: none">
+									<input id="renamefield" name="renamefield" class="" type="text">
+									<button id="renamestreetbtn" class="btn btn-danger" type="button" value="x">
+										<i class="icon-text-width "></i>
+									</button>
+								</form>
+							</div >
+							<div class="span5 controls controls-row">
+								<form id="newstreetnameform" class="input-append">
+									<input id="newstreetnamefield" name="newstreetnamefield" class="input-medium" type="text" placeholder="Назва нової вулиці..">
+									<button id="addstreetbtn" class="btn btn" type="button" value="">
+										<i class="icon-plus "></i>
+									</button>
+								</form>
+							</div>
+						</div>
+					</div>
+					<!--end streets -->
+					<!-- building adder -->
+					<div class="row span10 offset1 " id="buildingsrow">
+						<div id="buildingadder" class='span9 controls controls-row well' style="display: none">
+							<legend>Новий будинок<a id="closebuildingadder" class="close"><i class="icon-remove"></i></a></legend>
+							<select id="streetselector_building" class="span3" data-style="btn">
+							</select>
+							<select id ="buildingtypeselector" class="span3" data-style="btn">
+								<option>Приватний</option>
+								<option>Багатоповерховий</option>
+								<option>Організація</option>
+							</select>
+							<form id="buildingnumberform" class="input-append span2">
+								<input id="streetnumber" name="streetnumber" type="text" class="input-small" placeholder="Номер..">
+								<button id="savebuildingbtn" type="button" class="btn btn"><i class="icon-plus "></i></button>
+							</form>
+						</div>
+					</div>
+					<!-- building adder -->
+
+				<!-- items adder block -->
+
+
+
+					<div id="commutatoradder" class='span8 well offset1' style="display: none">
+						<legend>Комутатори<a id="closecommutatoradder" class="close"><i class="icon-remove"></i></a></legend>
+						<div class="input-append span3">
+							<select id ="comselector"class="" data-style="btn">
+							</select>
+							<button id="delcombtn"class="btn btn-danger" ><i class="icon-trash "></i></button>
+						</div>
+						<div class="span4">
+							<form id="newcomform" class="input-append">
+								<input id="newcomname" name="newcomname" type="text" class="input-medium" placeholder="Новий комутатор..">
+								<button id="manageableButtonYes" data-toggle="button" class="btn">Керований</button>
+								<input id="addcombtn"class="btn btn" type="button" value="Додати">
+							</form>
+						</div>
+					</div>
+
+
+
+					<div id="boxadder" class='span8 well offset1' style="display: none">
+						<legend>Коробки<a id="closeboxadder" class="close"><i class="icon-remove"></i></a></legend>
+						<div class="controls controls-row">
+							<div class="span4">
+								<div class="controls controls-row">
+									<div class="input-append span">
+										<select id="boxselector"class="input-small" data-style="btn"></select>
+										<button id="deleteboxbtn" class="btn btn-danger"><i class="icon-trash "></i></button>
+									</div>
+									<div class="span">
+										<a href="#boximageModal" role="button" class="btn btn" data-toggle="modal">
+											<i class="icon-picture "></i>
+										</a>
+									</div>
+								</div>
+							</div>
+							<div class="span3">
+								<form id="newboxnameform"class="input-append">
+									<input id="newboxname" name="newboxname" class="input-small" type="text" placeholder="Введіть назву..">
+									<input id="addboxbtn"class="btn btn" type="button" value="Додати" style="">
+								</form>
+							</div>
+						</div>
+					</div>
+
+					<div id="upsadder" class='span7 well offset2' style="display: none">
+						<legend>Блоки живлення<a id="closeupsadder" class="close"><i class="icon-remove"></i></a></legend>
+						<div class="controls controls-row">
+							<div class="input-append span">
+								<select id ="upsselector" data-style="btn">
+								</select>
+								<button id="delupsbtn"class="btn btn-danger"><i class="icon-trash "></i></button>
+							</div>
+							<form id="newupsnameform" class="input-append span">
+								<input id="newupsname" name="newupsname" class="input-medium" type="text" placeholder="Введіть назву..">
+								<input id="addupsbtn"class="btn btn" type="button" value="Додати">
+							</form>
+						</div>
+					</div>
+
+					<div id="odfadder" class='span7 well offset2' style="display: none">
+						<legend>ODF<a id="closeodfadder" class="close"><i class="icon-remove"></i></a></legend>
+						<div class="controls controls-row">
+							<div class="input-append span">
+								<select id ="odfselector" data-style="btn"></select>
+								<button id="delodfbtn"class="btn btn-danger"><i class="icon-trash "></i></button>
+							</div>
+							<form id="newodfnameform" class="input-append span">
+								<input id="newodfname" name="newodfname" type="text" class="input-medium" placeholder="Новий ODF..">
+								<input id="addodfbtn"class="btn btn" type="button" value="Додати">
+							</form>
+						</div>
+					</div>
+
+				<!-- items adder end -->
+					<div class=" span15" style="margin-left: 70px;">
+					<div class="span4">
+						<input type="text" class="input-large span4" placeholder="Пошук"
+						id="mainbuildingssearch">
+						<div id="buildinglistblock" class="">
+							<ul id="buildingslist" class="nav-list nav mainlist" style="height: 555px; overflow: auto;">
+							</ul>
+						</div>
+					</div>
+
+					<div class="span6">
+
+						<!-- building info area -->
+
+						<div class="buildinginfoheader" style="">
+							Інформація про вузол
+						</div>
+						<!-- start of building info -->
+						<div id="buildinginfo" class=''>
+							<!-- accordion basic info-->
+							<div class="accordion" id="accordionBasic">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionasic" href="#collapseBasic">
+										Будинок
+										</a>
+									</div>
+									<div id="collapseBasic" class="accordion-body collapse in">
+										<div class="accordion-inner">
+											<div class="infoblock ">
+												<span id="building_id" style="display: none" value=""></span>
+												<span class="infolabel label label-important">Адреса :</span>
+												<span id="buildingnameinfo" class=""></span>
+											</div>
+											<div class="infoblock ">
+												<span class="infolabel label label-important">Під'їзд :</span>
+												<span class="" id="entranceinfo"></span>
+											</div>
+											<div class="infoblock ">
+												<span class="infolabel label label-important">Тип :</span>
+												<span class="" id="typeinfo"></span>
+											</div>
+											<div class="infoblock ">
+												<span class="infolabel label label-important">Ключ в квартирі : </span>
+												<span class="" id="keyinfo"></span>
+											</div>
+											<div class="infoblock ">
+												<span class="infolabel label label-important">Додаткова інформація :</span>
+												<span class="" id="additionalinfo"></span>
+											</div>
+											<div class="infoblock ">
+												<span class="infolabel label label-important">Драбина:</span>
+												<span class="" id="ladderinfo"></span>
+											</div>
+											<!-- change info modal -->
+											<div class="buttonblock">
+												<a id = "showchangebuildinginfodialog" href="#changeBuildingInfoModal" role="button" class="btn" data-toggle="modal">Змінити</a>
+											</div>
+											<!-- change info modal end -->
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--accordion basic info end -->
+							<!-- accordion maps info-->
+							<div class="accordion" id="accordionMaps">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionasic" href="#collapseMaps">
+										Карта
+										</a>
+									</div>
+									<div id="collapseMaps" class="accordion-body collapse in">
+										<div class="accordion-inner">
+											  <div id="map" style="width: 540px; height: 400px"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--accordion maps info end -->
+
+							<!--accordion connections -->
+							<div class="accordion" id="accordionConnections">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionConnections" href="#collapseConnections">
+										Зв'язки
+										</a>
+									</div>
+									<div id="collapseConnections" class="accordion-body collapse in">
+										<div class="accordion-inner">
+											<div id="incomingconnectionsinfo"class="infoblock ">
+												<span class="infolabel label label-important" >Включений з:</span>
+												<div class="linkinfo" id="linkfrominfo"></div>
+											</div >
+											<div id="outgoingconnectionsinfo" class="infoblock ">
+												<span class="infolabel label label-important">
+												З будинка включені :</span>
+												<div class="linkinfo" id="linkoutinfo"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- accordion connectins end -->
+							<div class='accordion' id='accordionequipment'>
+								<div class='accordion-group'>
+									<div class='accordion-heading'>
+										<a id='boxname' class='accordion-toggle' data-toggle='collapse' data-parent='#accordionequipment' href='#collapseequipment'>
+											Обладнання
+										</a>
+									</div>
+									<div id='collapseequipment' class='accordion-body collapse in'>
+										<div class='accordion-inner'>
+											<div id="equipmentinfo">
+
+											</div>
+										</div>
+										<div class="modal-header">
+											<input type="button" id="changeEquipmentBtn" class="btn btn" value="Змінити обладнання">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- accordion end -->
+
+				</div>
+					<!-- end of building info -->
+					<div id="changeEquipment" class="span10 well offset1" style="display: none">
+						<div >
+					<legend>Зміна обладнання<a id="closequipmentchange" class="close"><i class="icon-remove"></i></a></legend>
+					<div class="row">
+						<div class="span">
+							<!-- boxes  -->
+							<div >
+								<label class="label label-important">Коробки</label>
+								<div class="">
+									<span>
+										<select id="buildingboxeslist" size="16" class="boxeslist" data-style="btn">
+										</select>
+									</span>
+								</div>
+								<div  class="controls controls-row buttonblock">
+									<div class="span form-horizontal" >
+										<a href="#addbuildingsBoxModal" role="button" class="btn btn" data-toggle="modal"><i class=" icon-plus "></i> </a>
+										<a href="#changeBuildingsBoxTypeModal" role="button" class="btn  btn-mini" data-toggle="modal">Змінити тип</a>
+										<button id="delbuildingsboxbtn" class="btn btn-mini btn-danger"><i class="icon-trash "></i></button>
+									</div>
+								</div>
+							</div>
+							<!-- boxes end -->
+						</div>
+						<div class="span5">
+							<div class="span6">
+								<!-- commutators -->
+								<div id="" class='span' style="">
+									<label class="label label-important">Комутатори</label>
+									<div class="">
+										<span>
+											<select id="boxcommutatorlist" size="16" class="" data-style="btn">
+											</select>
+										</span>
+									</div>
+									<div  class="controls controls-row buttonblock">
+										<div class="form-horizontal">
+											<a href="#commutatorModal" role="button" class="btn btn" data-toggle="modal"><i class=" icon-plus "></i></a>
+											<button id="delboxcombtn"  class="btn btn-mini btn-danger"
+											><i class="icon-trash "></i></button>
+											<button id="freeports" type="button"  class="btn btn-mini btn"
+											>Вільні порти</button>
+										</div>
+									</div>
+								</div>
+										<!-- upses -->
+								<span class='span' style="">
+									<label class="label label-important">Блоки живлення</label>
+									<div class="">
+									<span>
+										<select id="boxupseslist" size="5"  data-style="btn">
+										</select>
+									</span>
+									</div>
+									<div  class="controls controls-row buttonblock">
+										<div class="form-horizontal">
+											<a href="#upsModal" role="button" class="btn btn" data-toggle="modal"><i class="icon-plus "></i></a>
+											<button id="delboxups" class="btn btn-mini btn-danger"><i class="icon-trash "></i></button>
+										</div>
+									</div>
+								</span>
+
+								<!-- odf -->
+								<span id="" class='span' style="">
+									<label class="label label-important">ODF</label>
+									<div class="">
+										<span>
+											<select id="boxodflist" size="5" class="" data-style="btn">
+											</select>
+										</span>
+									</div>
+										<div  class="controls controls-row buttonblock">
+										<div class="form-horizontal">
+											<a href="#odfModal" role="button" class="btn btn" data-toggle="modal"><i class=" icon-plus "></i></a>
+											<a href="#odfimageModal" role="button" class="btn btn" data-toggle="modal"><i class="icon-picture "></i></a>
+											<button id="delboxodf"  class="btn btn-mini btn-danger"><i class="icon-trash "></i></button>
+										</div>
+									</div>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>					<!--  -->
+			</div>
+
+			</div>
+			</div>
+			<!--freeports modal -->
+				<div id="freeportsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="freeportsModalLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="freeportsModalLabel">Вказати вільні порти</h3>
+					</div>
+					<div class="modal-body">
+						<form class="input-append" id="freeportsform"  >
+							<input id="freeportsfield" name="freeportsfield" type="text">
+							<button type='button' id="addfreeports" class="btn btn">Змінити</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+					</div>
+				</div>
+			<!-- endfreeports modal -->
+			<!-- commutators modal -->
+				<div id="commutatorModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="commutatorModalLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="commutatorModalLabel">Додати комутатор</h3>
+					</div>
+					<div class="modal-body">
+						<span>
+							<select id="changecommutatorlist" size="" class="" data-style="btn">
+							</select>
+							<form class="" style="display: none" id="mancomadditionalfieldsform" >
+								<input type="text" class="input-medium" id="mancomip" name="ip" placeholder="Введіть ip...">
+								<input id="mancomlogin" name="login" class="input-medium" type="text" placeholder="Введіть логін...">
+								<input id="mancompass" name="pass" class="input-medium" type="text" placeholder="Введіть пароль...">
+							</form>
+						</span>
+
+					</div>
+					<div class="modal-footer">
+						<button id="addcomtobox"class="btn btn">Додати</button>
+					</div>
+				</div>
+			<!-- end commutator modal -->
+
+			<!-- box modals -->
+				<div id="changeBuildingsBoxTypeModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeBuildingsBoxTypeModalLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="changeBuildingsBoxTypeModalLabel">Змінити тип коробки</h3>
+					</div>
+					<div class="modal-body">
+						<span>
+							<select id="changebuildingsboxselector" size="" class="" data-style="btn">
+							</select>
+						</span>
+						<div>
+							<img src="" id="imagechangebox" style="width: 300px;">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="changeboxtype" class="btn btn">Змінити</button>
+					</div>
+				</div>
+
+				<div id="addbuildingsBoxModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addbuildingsBoxModalLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="addbuildingsBoxModalLabel">Додати нову коробку</h3>
+					</div>
+					<div class="modal-body">
+						<span>
+						<select id="addnewbuildingsboxselector" size="" class="" data-style="btn">
+						</select>
+						</span>
+						<div>
+					<img src="" id="imagenewbox" style="width: 300px;" alt="">
+					</div>
+					</div>
+
+					<div class="modal-footer">
+						<button id="addnewboxtobuilding" class="btn btn">Додати</button>
+					</div>
+				</div>
+
+			<!-- box modals -->
+
+			<!-- ups modal -->
+				<div id="upsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="upsModalLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="upsModalLabel">Додати UPS</h3>
+					</div>
+					<div class="modal-body">
+						<span>
+						<select id="changeupseslist" size="" class="" data-style="btn">
+						</select>
+						</span>
+					</div>
+					<div class="modal-footer">
+						<button id="addupstobox" class="btn btn">Додати</button>
+					</div>
+				</div>
+			<!-- ups modal -->
+
+			<!-- odf modal -->
+				<div id="odfModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="odfModalLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="odfModalLabel">Додати ODF</h3>
+					</div>
+					<div class="modal-body">
+						<form method="post" enctype="multipart/form-data" action="/upload" class="">
+							<div class="controls">
+								<div class="controls controls-row">
+									<label class="span1 label label-important">Тип</label>
+									<select id="changeodflist" size="" class="span3" data-style="btn">
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer"><input type="button" class="btn btn" multiple="multiple" id="addodfbutton" value="Додати"></div>
+				</div>
+
+			<!-- odf modal -->
+
+			<!-- change building info modal -->
+			<div id="changeBuildingInfoModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeBuildingInfoModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="changeBuildingInfoModalLabel">Змінити інформацію</h3>
+				</div>
+				<div id="changebuildinginfoblock" class="modal-body">
+					<form id="newbuildinginfoform">
+						<div class="controls controls-row">
+							<span class="btn btn span2">Під'їзд :</span>
+							<input type="text" class="span" id="newentranceinfo" name="newentranceinfo">
+						</div>
+						<div class="controls controls-row">
+							<span class="btn btn span2">Ключ в квартирі : </span>
+							<input type="text" class="span" id="newkeyinfo" name="newkeyinfo">
+						</div>
+						<div class="controls controls-row">
+							<span class="btn btn span2">Додаткова інформація :</span>
+							<textarea class="span"  rows="10" cols="70" id="newadditionalinfo"  name="newadditionalinfo"></textarea>
+						</div>
+						<div class="controls controls-row">
+							<span class="btn btn span2">Драбина:</span>
+							<input type="text" class="span" id="newladderinfo" name="newladderinfo">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button id="changebuildinginfo" type="button" class="btn btn" value="">Зберегти</button>
+				</div>
+			</div>
+			<!-- odf foto carusel -->
+
+			<!-- carusel modal -->
+			<div id="savedodfimagesModal" class="modal bigmodal hide fade" tabindex="-1" role="dialog" aria-labelledby="savedodfimagesModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="savedodfimagesModalLabel">Зображення ODF</h3>
+				</div>
+				<div class="modal-body">
+					<div class="row-fliud span5" >
+						<div id="odfimagescontainer"></div>
+					</div>
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+			<!-- carusel modal -->
+
+			<!-- odf image modal -->
+				<div id="odfimageModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="odfimageModalLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="odfimageModalLabel">Додати фото</h3>
+					</div>
+					<div class="modal-body">
+						<div id="odfphotouploadform">
+							<div class="row">
+								<div class="span5">
+									<form id="odfimageform" method="post" action="/uploadequipmentimage">
+										<div class="controls controls-row">
+											<label class="label label-important span1">Фото</label>
+											<input  type="file" name="odfimage" id="odfimage" class="span2">
+										</div>
+										<div class="form-actions">
+											<input id="saveodfimage" type="submit" value="Вперед!" class="btn btn"></div>
+									</form>
+								</div>
+
+								<div class="span4">
+									<div class="progress progress-striped active hide">
+										<div style="width: 0%" class="bar">
+										</div>
+									</div>
+								</div>
+
+								<div class="span4">
+									<div class="alert hide">
+										<button type="button" data-dismiss="alert" class="close">x</button>
+										<span><strong class="message"></strong></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer"></div>
+				</div>
+			<!-- odf image modal end -->
+
+			<!-- box image modal -->
+				<div id="boximageModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="boximageModalLabel" aria-hidden="true">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+						<h3 id="boximageModalLabel">Додати фото</h3>
+					</div>
+					<div class="modal-body">
+						<form id="boximageform" method="post" action="/uploadequipmentimage">
+							<div class="controls controls-row">
+								<label class="label label-important span1">Фото</label>
+								<input  type="file" name="boximage" id="boximage" class="span2">
+							</div>
+							<div class="form-actions">
+								<input id="saveboximage" type="submit" value="Вперед!" class="btn btn"></div>
+						</form>
+					</div>
+					<div class="modal-footer"></div>
+				</div>
+			<!-- box image modal end -->
+
+
+			<!-- deleteconfirmmodal -->
+			<div id="delconfirmmodal" class="modal hide fade">
+			    <div class="modal-header">
+			      <h3>Видалення</h3>
+			    </div>
+			    <div class="modal-body" style="height : 120px;">
+					<div class="alert">
+						<p >Ви намагаєтесь видалити імовірно важливу інформацію. Можливості її відновлення не буде!</p>
+						<p >Бажаєте продовжити?</p>
+					</div>
+				</div>
+			    <div class="modal-footer">
+			      <a href="javascript:$('#delconfirmmodal').modal('hide')" class="btn btn">Ні</a>
+			      <button id="deleteitemirreversibly" class="btn btn-danger">Так</button>
+			    </div>
+			</div>
+			<!-- deleteconfirmmodal end -->
+
+			<!-- change equipment -->
+			</div>
+	</body>
+</html>
+

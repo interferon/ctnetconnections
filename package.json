@@ -1,0 +1,8 @@
+{
+    "name": "ctnet",
+    "version": "0.0.1",
+    "scripts": {
+        "start": "server server.js"
+    }
+   
+}

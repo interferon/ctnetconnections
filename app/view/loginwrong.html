@@ -1,0 +1,29 @@
+<html>
+<head>
+<title>Login</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script type="text/javascript" src="jquery-1.9.1.js"></script>
+<link href="bootstrap/css/bootstrap-combined.min.css" rel="stylesheet" media="screen">
+<link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+</head>
+	<body>
+		<div id="login-container" style="margin-top: 13%; margin-left: 32%;">
+			<form  method="POST" action="/login" accept-charset="UTF-8" class="well span4" style="">
+			<h1>Вітаю!</h1>
+			<p class="subheading">Будь-ласка, увійдіть до свого облікового запису!</p>
+			<div class="alert alert-error" style="">
+				<a class="close" data-dismiss="alert" href="#"></a>Невірний логін або пароль!
+			</div>
+
+			<input type="text" id="username" class="span4" name="login" placeholder="Логін" style="height: 30px;" placeholder="Ім'я користувача" required="true">
+			<input type="password" id="password" class="span4" name="pass" placeholder="Пароль" style="height: 30px;" placeholder="Пароль" required="true">
+			<button type="submit" id="btn-login" class="btn btn-primary btn-block"><i class="icon-lock icon-white"></i>Увійти</button>
+			<div class="clear-fix"></div>
+			<hr>
+			</form>
+		</div>
+	</body>
+</html>
