@@ -1,5 +1,51 @@
 $(document).ready(
 	() ->
+		finance = {
+			getUSDAdjust : (cb) ->
+				$.get(
+					"/usdadjust",
+					(json) ->
+						finance.adjust = +json.adjust
+						cb() 
+				)
+			used_providers : 0
+			adjust : null
+			providers_url : {
+				'yahoo' : "http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json",
+				'rate_exchange' : "http://rate-exchange.appspot.com/currency?from=USD&to=UAH"
+			}
+			current_rate : null
+			getUAHEchangeRate : (provider, url, adjust) ->
+				if finance.used_providers < 2
+					$.ajax({
+						url: url,
+						dataType: 'jsonp', 
+						success: (json)->
+							finance.extractRate[provider](json, adjust);
+							ui.setCurrentRate(finance.current_rate.toFixed(2));
+						,
+						error:() ->
+							finance.getUAHEchangeRate('rate_exchange', finance.providers_url.rate_exchange, adjust);
+							finance.used_providers++;
+					})
+			extractRate :{
+				yahoo : (rates, adjust) ->
+					for rate in rates.list.resources
+						price = rate.resource.fields.price
+						symbol = rate.resource.fields.symbol
+						finance.current_rate = +price + adjust if symbol == "UAH=X"
+				rate_exchange : (rate, adjust) ->
+					finance.current_rate = rate.rate
+				} 
+		}
+
+		finance.getUSDAdjust(
+			() ->
+				finance.getUAHEchangeRate('yahoo', finance.providers_url.yahoo, finance.adjust || 0.60);
+				finance.used_providers++;
+		)
+		
+
 		consts = {
 			unpaidCable : 60
 			regularlyPaidCable : 60
@@ -7,17 +53,18 @@ $(document).ready(
 			pricePerMeter : 5
 			pricePerMeterAsWork: 4
 			work : 150
-			promowork : 75
-			promo : 300
+			promowork : 100
+			promo : 250
 		}
 
 		opticalpayments = {
-			commutator : 640
-			mediaconverter : 450
+			commutator : 81
+			mediaconverter : 54
 			no : 0
 		}
 
 		ui = {
+			setCurrentRate : (rate) -> $("#current_rate").text(rate); 
 			getprepaid : () -> return $("input[name='promo']:checked").attr('value') == "yes" ? true : false
 			getcablelength : () ->	return +$("#cablelength").val()
 			getuserplan : () -> return +$("#userplan").val()
@@ -70,15 +117,15 @@ $(document).ready(
 				if prepaid
 					userbill=+consts.promo
 					work = consts.promowork
-				work += opticalpayments[opticaltype]
+				work += opticalpayments[opticaltype]*finance.current_rate
 				total = work + userbill
 				if planbill > 0
 					total += planbill
 					userbill+=planbill
 				return {
-					work : work
-					userbill : userbill
-					total : total
+					work : work.toFixed(0)
+					userbill : userbill.toFixed(0)
+					total : total.toFixed(0)
 				}
 
 			calculateMeduimLengthCase : (cablelength, prepaid, planbill, opticaltype) ->
@@ -90,15 +137,15 @@ $(document).ready(
 					work += consts.promowork
 				else
 					work+=consts.work
-				work += opticalpayments[opticaltype]
+				work += opticalpayments[opticaltype] * finance.current_rate
 				total = work + userbill
 				if planbill > 0
 					total = total + planbill
 					userbill+=planbill
 				return {
-					work : work
-					userbill : userbill
-					total : total
+					work : work.toFixed(0)
+					userbill : userbill.toFixed(0)
+					total : total.toFixed(0)
 				}
 
 			calculateLongLengthCase : (cablelength, userplan, userplanduration, oncash, opticaltype) ->
@@ -112,13 +159,13 @@ $(document).ready(
 						userbill = userbill - overpay
 				else
 					work += (cablelength - consts.limitCable)*consts.pricePerMeterAsWork
-				work += opticalpayments[opticaltype]
+				work += opticalpayments[opticaltype] * finance.current_rate
 				userbill = userbill + userplan * userplanduration
 				total = work + userbill
 				return {
-					work : work
-					userbill : userbill
-					total : total
+					work : work.toFixed(0)
+					userbill : userbill.toFixed(0)
+					total : total.toFixed(0);
 				}
 		}
 

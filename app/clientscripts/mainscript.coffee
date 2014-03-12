@@ -1,5 +1,19 @@
 $(document).ready(
 	() ->
+
+		# prevents form post on enter press
+		$(window).keydown(
+			(event) ->
+				if event.keyCode == 13 
+			    	event.preventDefault();
+			    	return false;	    
+		)
+
+		changeLogTimeout = null;
+		
+		String.prototype.capitalize = () ->
+    		return this.charAt(0).toUpperCase() + this.slice(1);
+
 		BUILDINGS_LIST = []
 		selectedbuilding_id = ""
 		getSelectedBuildingBoxId = ""
@@ -254,6 +268,19 @@ $(document).ready(
 					showChangeLog()
 					utils.displayIfInvisible($("#changelogblock"))
 			)
+			$("#changelogstartdate").bind(
+				'change',
+				() ->
+					clearTimeout(changeLogTimeout) if changeLogTimeout
+					changeLogTimeout = setTimeout(getChangeLogsByDate, 2000)
+			)
+
+			$("#changelogenddate").bind(
+				'change',
+				() ->
+					clearTimeout(changeLogTimeout) if changeLogTimeout
+					changeLogTimeout = setTimeout(getChangeLogsByDate, 2000)
+			)
 
 			$("#closechangelog").bind(
 				'click',
@@ -269,12 +296,11 @@ $(document).ready(
 			$('#addstreetbtn').bind(
 				'click',
 				(e) ->
-					id = e.target.id
 					if $("#newstreetnameform").valid()
 						saveStreetName(
 							getStreetName(),
 							() ->
-								clearTextInput(id)
+								clearTextInput(e.target.id)
 								populateStreetNamesSelectors()
 						)
 			)
@@ -462,8 +488,7 @@ $(document).ready(
 			$("#addworkerbtn").bind(
 				'click',
 				(e) ->
-					if $("#workerform" ).valid()
-
+					if $("#workerform").valid()
 						saveWorkerName(
 							getWorkerName(),
 							() ->
@@ -911,7 +936,7 @@ $(document).ready(
 			return $("#streetselector_building").val()
 
 		getStreetName = () ->
-			return $('#newstreetnamefield').val()
+			return $('#newstreetnamefield').val().capitalize()
 
 		getWorkerName = () ->
 			return  $("#newworkernamefield").val()
@@ -1061,6 +1086,29 @@ $(document).ready(
 				{
 					"path" : "getsaveditems",
 					"parameters" : [{"param_name" : "collection", "param_value" : "logs"}]
+				},
+				(loginfo) ->
+					table = utils.createTable(loginfo)
+					$("#changelogtable").empty()
+					$("#changelogtable").append(table)
+			)
+
+		getChangeLogsByDate = () ->
+			
+			start = $("#changelogstartdate").val().split("-")
+			end = $("#changelogenddate").val().split("-")
+
+			utils.getDataFromDB(
+				{
+					"path" : "getchangelogs",
+					"parameters" : [
+						{"param_name" : "syear", "param_value" :  start[0]},
+						{"param_name" : "smonth", "param_value" :  start[1]-1},
+						{"param_name" : "sday", "param_value" :  start[2]},
+						{"param_name" : "eyear", "param_value" :  end[0]},
+						{"param_name" : "emonth", "param_value" :  end[1]-1},
+						{"param_name" : "eday", "param_value" :  end[2]}	
+					]
 				},
 				(loginfo) ->
 					table = utils.createTable(loginfo)

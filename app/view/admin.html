@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Admin panel</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script type="text/javascript" src="app/clientscripts/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="app/clientscripts/utils.js"></script>
+	<script type="text/javascript" src="app/clientscripts/serverCommunicator.js"></script>
+	<link href="bootstrap/css/bootstrap-combined.min.css" rel="stylesheet" media="screen">
+	<link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link href="app/css/ctnetstyles.css" rel="stylesheet" media="screen">
+	<link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet" media="screen">
+	<script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="app/clientscripts/jquery.validate.js"></script>
+	<script type="text/javascript" src="app/clientscripts/admin.js"></script>
+</head>
+<body>
+	<div>
+		<h3><a style="position: absolute;" href="/"><img src="app/images/logoctnet.png"></a></h3>
+	</div>
+	<h5 class="muted">
+		<div class="alert affix" id="serverMessages" style="display: none"></div>
+	</h5>
+	<div style="margin-top : 10 px">
+		<div class="span5 well offset4" >
+		<legend>Новий користувач</legend>
+			<form id="newuserform">
+				<div class="controls controls-row">
+					<label for="userlogin" class="label label-important span1">Логін</label>
+					<input id="userlogin" name="userlogin" type="text" class="span2">
+				</div>
+				<div class="controls controls-row">
+					<label for="userpass" class="label label-important span1">Пароль</label>
+					<input id="userpass" name="userpass" type="text" class="span2">
+				</div>
+					<button id="saveuser" class="btn span" type="button">Зберегти</button>
+			</form>
+			<legend>Видалити користувача</legend>
+			<form id="deleteuserform">
+					<div class="controls controls-row">
+						<label  for="users" class="label label-important span1">Логін</label>
+						<input id="usertodelete" name="usertodelete" type="text" class="span2">
+						<button id="deleteuser" class="btn span" type="button">Видалити</button>
+					</div>
+			</form>
+			<legend>Видалити будинок</legend>
+			<form id="deletebuildingform">
+					
+					<div class="controls controls-row">
+						<label  for="streetid" class="label label-important span1">ID</label>
+						<input id="streetid" name="streetid" type="text" class="span2">
+						<button id="deletebuilding" class="btn span" type="button">Видалити</button>
+					</div>
+					
+			</form>
+			<legend>Поправка курсу доллара</legend>
+			<form id="usdadjustform">
+					<div class="controls controls-row">
+						<label  for="usdadjust" class="label label-important span1">Поправка</label>
+						<input id="usdadjust" name="usdadjust" type="text" class="span1">
+						<button id="saveadjust" class="btn span" type="button">Зберегти поправку</button>
+					</div>	
+			</form>		
+		</div>
+	</div>
+</body>
+</html>

@@ -23,7 +23,7 @@ class ServerCommunicator
 								$("#serverMessages").removeClass('alert-error')
 							, 3000
 						)
-		_httpRequest.open(method, "http://127.0.0.1:8080/" + path, true)
+		_httpRequest.open(method, "/" + path, true)
 		_httpRequest.setRequestHeader('Content-Type', 'application/json')
 		_httpRequest.send(request_body)
 

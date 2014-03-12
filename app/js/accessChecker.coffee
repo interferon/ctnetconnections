@@ -1,13 +1,12 @@
 accessToResourseAllowed = (login) ->
-		result = false
-		if login == 'victor'
-			result = true
-		return result
-
+	result = false
+	if login == 'victor' || login == 'chovgan' || login == 'admin'
+		result = true
+	return result
 
 checkAccess = (req, res, next) ->
 	if !accessToResourseAllowed(req.session.login)
-		res.send(JSON.stringify({result : "Ви не можете додавати дані"}))
+		res.end("Access not allowed!")
 	else
 		next()
 

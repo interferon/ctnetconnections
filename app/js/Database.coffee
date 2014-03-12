@@ -1,5 +1,6 @@
 mongojs = require('mongojs')
-collections = [	'buildings',
+collections = [	
+				'buildings',
 				'equipment',
 				'boxesnames',
 				'streetnames',
@@ -23,7 +24,9 @@ collections = [	'buildings',
 				'socketsstore',
 				'workerscash',
 				'warehouselogs',
-				'sessions'
+				'sessions',
+				'accesslevel',
+				'other'
 			]
 
 db = mongojs.connect('ctnet', collections)
@@ -76,8 +79,16 @@ class Database
 		return id
 
 	removeByParam : (collection, param, callback) ->
-		db[collection].remove(param)
-		callback({result : "Видалено!"})
+		db[collection].remove(
+			param,
+			(err, result) ->
+				console.log(err, result)
+				if !err
+					callback(true)
+				else
+					callback(false)
+		)
+		
 
 	update : (collection, item_id, update, update_type, callback) ->
 		id = db.ObjectId(item_id)
@@ -131,7 +142,6 @@ class Database
 							callback({result : "Вміст поля змінено!"})
 				)
 	findAndModify : (collection, item_id, data, fn) ->
-		console.log(db.ObjectId(item_id))
 		db[collection].findAndModify(
 			{
 				query: { id: db.ObjectId(item_id) },

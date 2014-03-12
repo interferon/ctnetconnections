@@ -1,10 +1,9 @@
-core = require('./core')
 fs = require('fs')
 
 replaceStreetIdWithStreetNames = (buildings, streetnames) ->
-			for b in buildings
-				b.street = streetnames.filter((e) -> e._id.toString() is b.street)[0].name
-			return buildings
+	for b in buildings
+		b.street = streetnames.filter((e) -> e._id.toString() is b.street)[0].name
+	return buildings
 
 replaceBuildingsIdWithBuildings = (items, buildings, params) ->
 	for i in items
@@ -15,11 +14,7 @@ replaceBuildingsIdWithBuildings = (items, buildings, params) ->
 
 replaceBuildingBoxesIDsWithObjects = (buildings, equipment) ->
 	replace = (data) ->
-		objects = []
-		for elem in data
-			elem = equipment.filter((e) -> e._id.toString() is elem)[0]
-			objects.push(elem)
-		return objects
+		objects = data.map((id) -> equipment.filter((e) -> e._id.toString() is id)[0])
 
 	for building in buildings
 		building.boxes = replace(building.boxes)
@@ -61,7 +56,7 @@ createCableUseTableData = (items) ->
 	values.push(['Всього', '', totalcableuse, '', '', ''])
 	return  {
 		"title" : 'Звіт з використання кабелю'
-		"headers" : ['Номер договору','Монтажники', 'Кількість кабелю (м)', 'Тип', 'Марка',  'Дата']
+		"headers" : ['Номер договору', 'Монтажники', 'Кількість кабелю (м)', 'Тип', 'Марка',  'Дата']
 		"values" : values
 		"style" : "table table-bordered table-hover table-condensed"
 	}
@@ -137,7 +132,7 @@ createCopperUseTableData = (items) ->
 		values.push(rowdata)
 	return  {
 		"title" : 'Використаний кабель'
-		"headers" : ['Дата', 'Призначення', 'Довжина (м)','Монтажники',  'Додав']
+		"headers" : ['Дата', 'Призначення', 'Довжина (м)', 'Монтажники',  'Додав']
 		"values" : values
 		"style" : "table table-bordered table-hover table-condensed"
 	}
@@ -580,19 +575,22 @@ prepareBuildingsInfo = (dbdata, building_id) ->
 createItem = (req, db, callback) ->
 	item = null
 	switch req.body.collection
+		when 'users'
+			callback({
+				'login' : req.body.login,
+				'pass' : req.body.pass
+			})
+
 		when "commutatornames"
-			item = core.createCommutator(
-				{
+			callback({
 					"name" : req.body.name
 					"manageable" : req.body.manageable
 					"free" : 0
-				}
-			)
-			callback(item)
+				})
+			
 
 		when "buildings"
-			item = core.createBuilding(
-				{
+			callback({
 					"type" : req.body.item.type
 					"street" : req.body.item.street
 					"number" : req.body.item.number
@@ -601,12 +599,11 @@ createItem = (req, db, callback) ->
 					"ladder" : ""
 					"info" : ""
 					"boxes" : []
-				}
-			)
-			callback(item)
+				})
+			
 
 		when "connectors"
-			callback(core.createBuildingsConnector(req.body.item))
+			callback(req.body.item)
 
 		when "cableincome"
 			callback({
@@ -614,7 +611,7 @@ createItem = (req, db, callback) ->
 				"date" : req.body.data.date,
 				"manufacturer" : req.body.data.manufacturer,
 				"type" : req.body.data.type
-				})
+			})
 
 		when "cableuse"
 			callback({
@@ -624,7 +621,7 @@ createItem = (req, db, callback) ->
 				"date" : req.body.data.date,
 				"type" : req.body.data.type,
 				"manufacturer": req.body.data.manufacturer
-				})
+			})
 
 		when 'logs'
 			item = req.body.data
@@ -746,7 +743,6 @@ createLogObject = (item, action, user) ->
 			"user" : user
 		}
 	)
-
 
 
 runResponse = (res, data, content_type) ->

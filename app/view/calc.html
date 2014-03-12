@@ -14,7 +14,13 @@
 </head>
 	<body>
 		<div>
-			<h4><a href="/"><img src="app/images/logoctnet.png"></a></h4>
+			<div>
+				<h4><a style="position: absolute;" href="/"><img src="app/images/logoctnet.png"></a></h4>
+			</div>
+			<div class="well span6 controls controls-row offset5" id="cablelengthblock" >
+				<label class="span3 label label-important">Сьогодні курс долара :</label>
+				<label id="current_rate" class="span label label-important"></label>
+			</div>
 		</div>
 		<div class="well span6 offset5" >
 
@@ -33,7 +39,7 @@
 			</form>
 			<div id="promoblock">
 				<div class="span7 infoblock">
-					<label class="span label label-important">Акційний аванс(300грн)</label>
+					<label class="span label label-important">Акційний аванс</label>
 				</div>
 				<div class="controls controls-row offset1 ">
 					<label for="promoprepaidyes" class="span1 label">Так</label>

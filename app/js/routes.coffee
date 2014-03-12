@@ -1,6 +1,8 @@
 dataProcFn = require('./dataProcessingFunctions')
 path = require('path')
 accessChecker = require('./accessChecker')
+collectionsManager = require('./collectionsManager')
+
 module.exports.start = (app, db) ->
 
 	checkAuth = (req, res, next) ->
@@ -9,10 +11,19 @@ module.exports.start = (app, db) ->
 		else
 			next()
 
-	app.get('/',
-		checkAuth
+	app.get(
+		'/',
+		checkAuth,
 		(req, res) ->
-			res.sendfile(path.join(__dirname,'/../view/index.html'))
+			res.sendfile(path.join(__dirname, '/../view/index.html'))
+	)
+
+	app.get(
+		'/admin',
+		checkAuth,
+		accessChecker.checkAccess,
+		(req, res) ->
+			res.sendfile(path.join(__dirname, '/../view/admin.html'))
 	)
 
 	app.get(
@@ -39,7 +50,6 @@ module.exports.start = (app, db) ->
 		(req, res) ->
 			res.sendfile(path.join(__dirname,'/../view/warehouse.html'))
 	)
-
 
 	app.post('/login',
 		(req, res) ->
@@ -75,6 +85,22 @@ module.exports.start = (app, db) ->
 	)
 
 	app.post(
+		'/deleteuser',
+		checkAuth,
+		accessChecker.checkAccess,
+		(req, res) ->
+			collectionsManager.deleteUser(req.body.login, res, db)
+	)
+
+	app.post(
+		'/deletebuilding',
+		checkAuth,
+		accessChecker.checkAccess,
+		(req, res) ->
+			collectionsManager.deleteBuilding(req.body.id, res, db)
+	)
+
+	app.post(
 		'/deleteboxequipment',
 		(req, res) ->
 			db.getById(
@@ -92,6 +118,14 @@ module.exports.start = (app, db) ->
 					res.setHeader('Content-Type', 'text/plain')
 					res.end(JSON.stringify({"result" : "Related equipment deleted"}))
 			)
+	)
+
+	app.post(
+		'/saveusdadjust',
+		checkAuth,
+		accessChecker.checkAccess,
+		(req, res) ->
+			collectionsManager.saveUsdAdjust(req.body.adjust, res, db)
 	)
 
 	app.post(
@@ -163,7 +197,6 @@ module.exports.start = (app, db) ->
 					res.setHeader('Content-Type', 'text/plain')
 					res.end(JSON.stringify(result))
 			)
-
 	)
 
 	app.post(
@@ -323,7 +356,6 @@ module.exports.start = (app, db) ->
 				res.setHeader('Content-Type', 'text/plain')
 				res.end(JSON.stringify(result))
 		)
-
 
 	saveWorkerCash = (opticalusedata) ->
 		cablelength = opticalusedata.length/opticalusedata.workers.length
