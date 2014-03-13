@@ -1,7 +1,3 @@
 node_modules/
 *.js
-!bootstrap.js
-!bootstrap.min.js
-!bootstrap-select.js
-!bootstrap-select.min.js
-!jqBootstrapValidation.js
+!bootstrap/
