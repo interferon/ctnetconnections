@@ -1,5 +1,6 @@
 node_modules/
 *.js
+!app/clientscripts/*.js
 !bootstrap.js
 !bootstrap.min.js
 !bootstrap-select.js
